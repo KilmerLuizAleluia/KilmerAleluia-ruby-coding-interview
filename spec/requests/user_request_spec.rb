@@ -18,15 +18,24 @@ RSpec.describe "Users", type: :request do
 
   describe "#index" do
     let(:result) { JSON.parse(response.body) }
+    let!(:company) { create(:company) }
+    let!(:user) { create(:user, username: 'Kilmer Luiz', company_id: company.id) }
 
     context 'when fetching users by company' do
       include_context 'with multiple companies'
 
       it 'returns only the users for the specified company' do
         get company_users_path(company_1)
-        
+
         expect(result.size).to eq(company_1.users.size)
         expect(result.map { |element| element['id'] } ).to eq(company_1.users.ids)
+      end
+    end
+
+    context 'when fetching users by username' do
+      it 'should find user by part of the name' do
+        get company_users_path({ company_id: company.id, username: 'Luiz' })
+        expect(result.size).to eq(1)
       end
     end
 

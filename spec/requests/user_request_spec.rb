@@ -33,8 +33,23 @@ RSpec.describe "Users", type: :request do
     end
 
     context 'when fetching users by username' do
-      it 'should find user by part of the name' do
+      it 'should find user by last name' do
         get company_users_path({ company_id: company.id, username: 'Luiz' })
+        expect(result.size).to eq(1)
+      end
+
+      it 'should find user by part of the name' do
+        get company_users_path({ company_id: company.id, username: 'Lu' })
+        expect(result.size).to eq(1)
+      end
+
+      it 'should find user by part of the name in upper case' do
+        get company_users_path({ company_id: company.id, username: 'LU' })
+        expect(result.size).to eq(1)
+      end
+
+      it 'should find user by part of the name in lower case' do
+        get company_users_path({ company_id: company.id, username: 'lu' })
         expect(result.size).to eq(1)
       end
     end
